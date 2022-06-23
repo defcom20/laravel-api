@@ -1,0 +1,10 @@
+created:
+    - database/factories/UserStateFactory.php
+    - database/factories/UserFactory.php
+    - database/migrations/2022_06_11_225633_create_user_states_table.php
+    - database/migrations/2022_06_11_225634_create_users_table.php
+    - app/Models/UserState.php
+    - app/Models/User.php
+models:
+    UserState: { name: 'string:50', is_active: boolean }
+    User: { uuid: 'string:100 unique', name: 'string:100', email: 'string unique', usuario: 'string:150 unique', password: string, type_user: mediumInteger, potho: 'string nullable', user_state_id: id, email_verified_at: 'timestamp nullable', remember_token: rememberToken }
