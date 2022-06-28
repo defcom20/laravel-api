@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\ResetPasswordNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -55,5 +56,13 @@ class User extends Authenticatable
     public function userState()
     {
         return $this->belongsTo(UserState::class);
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+
+        $url = 'http://localhost:3000/reset-password?token=' . $token . '&email='. $this->email;
+
+        $this->notify(new ResetPasswordNotification($url));
     }
 }
