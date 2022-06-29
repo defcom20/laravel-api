@@ -50,6 +50,7 @@ class LoginController extends Controller
         $response = [
             "user" => $user,
             "token" => $user->createToken('API_Token')->plainTextToken,
+            'message' => 'Success'
         ];
 
         return response()->json($response, 201);
@@ -83,7 +84,7 @@ class LoginController extends Controller
         //return response()->noContent();
         return response([
             'status' => true,
-            'message' => ['You have successfully logoud out and the token has been deleted.'],
+            'message' => 'Success'
         ], 200);
     }
 

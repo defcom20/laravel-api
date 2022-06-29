@@ -28,7 +28,9 @@ class NewPasswordController extends Controller
 
         if ($status == Password::RESET_LINK_SENT) {
             return [
-                'status' => __($status),
+                'status' => true,
+                'data' => __($status),
+                'message' =>  'Success'
             ];
         }
 
@@ -42,7 +44,7 @@ class NewPasswordController extends Controller
         $request->validate([
             'token' => 'required',
             'email' => 'required|email',
-            'password' => ['required', 'confirmed', RulesPassword::defaults()],
+            'password' => ['required', 'confirmed', RulesPassword::min(6)],
         ]);
 
         $status = Password::reset(
@@ -61,11 +63,14 @@ class NewPasswordController extends Controller
 
         if ($status == Password::PASSWORD_RESET) {
             return response([
-                'message' => 'Password reset successfully',
+                'status' => true,
+                'data' => 'Password reset successfully',
+                'message' => 'Success',
             ]);
         }
 
         return response([
+            'status' => false,
             'message' => __($status),
         ], 500);
 
