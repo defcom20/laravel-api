@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -19,17 +19,6 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $guarded = [];
-
-    // protected $fillable = [
-    //     'uuid',
-    //     'name',
-    //     'email',
-    //     'usuario',
-    //     'password',
-    //     'type_user',
-    //     'potho',
-    //     'user_state_id ',
-    // ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -57,7 +46,6 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsTo(UserState::class);
     }
-
     public function sendPasswordResetNotification($token)
     {
 

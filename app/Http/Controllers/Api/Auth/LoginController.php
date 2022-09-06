@@ -63,7 +63,7 @@ class LoginController extends Controller
 
             $new_pass = bcrypt($request->password);
             User::where('uuid', $request->uuid)->update(['password' => $new_pass]);
-            $user = User::select('uuid', 'name', 'type_user')->where('id', Auth::user()->id)->first();
+            $user = User::select('uuid', 'name', 'type_user','email')->where('id', Auth::user()->id)->first();
             $response = [
                 "user" => $user,
                 'token' => $request->user()->createToken("token")->plainTextToken,

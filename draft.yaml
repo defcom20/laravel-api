@@ -13,5 +13,38 @@ models:
     user_state_id: id
     email_verified_at: timestamp nullable
     remember_token: rememberToken
+  Qr:
+    uuid: string:100
+    name: string:100
+    url_video: string:100
+    video_description: longtext nullable
+    is_active: boolean
+    expiration_date: timestamp nullable
+    user_id: id
+  QrInformation:
+    background_panel: string:20 nullable
+    business: string:150 nullable
+    video_title: string:200 nullable
+    description: string nullable
+    link_fb: string nullable
+    link_tw: string nullable
+    link_tk: string nullable
+    welcome_screen: string nullable
+    qr_id: id
+  QrDesign:
+    url_address: string nullable
+    dots_style: string:20 nullable
+    dots_color: string:20 nullable
+    corners_style: string:20 nullable
+    corners_color: string:20 nullable
+    background_color: string:20 nullable
+    image_file_center: string nullable
+    qr_id: id
+
+
+
+
+
+
 
 

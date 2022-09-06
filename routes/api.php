@@ -23,6 +23,16 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         ], 200);
         // return response()->json($user, 200);
     });
+    Route::get('/refresh', function (Request $request) {
+        //$request->user()->tokens()->delete();
+        print_r($request->user()->currentAccessToken());
+        //$request->user()->currentAccessToken()->delete();
+        return response()->json([
+            'refresh_token' => true,
+            'message' => 'Success',
+        ], 200);
+        // return response()->json($user, 200);
+    });
 
     Route::post('/resetPassword', [LoginController::class, 'resetPassword']);
     Route::post('/logout', [LoginController::class, 'logout']);
