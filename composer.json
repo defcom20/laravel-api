@@ -6,11 +6,13 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "fakerphp/faker": "^1.9.1",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^9.11",
         "laravel/sanctum": "^2.15",
         "laravel/tinker": "^2.7",
-        "fakerphp/faker": "^1.9.1"
+        "league/flysystem-aws-s3-v3": "^3.2",
+        "webpatser/laravel-uuid": "^4.0"
     },
     "require-dev": {
         "laravel-shift/blueprint": "^2.4",

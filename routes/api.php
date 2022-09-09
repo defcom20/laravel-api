@@ -4,11 +4,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\NewPasswordController;
+use App\Http\Controllers\Api\FileImageController;
+use App\Http\Controllers\Api\Moduls\qr\QrController;
 
 // Route::group(['prefix' => '/auth', ['middleware' => 'web']], function () {
 //     //Route::post('/login', [LoginController::class, 'login']);
 //     Route::post('/register', [LoginController::class, 'register']);
 // });
+
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/register', [LoginController::class, 'register']);
 Route::post('/forgot-password', [NewPasswordController::class, 'forgotPassword']);
@@ -31,12 +34,15 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
             'refresh_token' => true,
             'message' => 'Success',
         ], 200);
-        // return response()->json($user, 200);
     });
-
     Route::post('/resetPassword', [LoginController::class, 'resetPassword']);
     Route::post('/logout', [LoginController::class, 'logout']);
+    Route::apiResources([
+        'qrs' => QrController::class,
+    ]);
 });
+
+Route::get('/{path}/{name}', [FileImageController::class, 'show']);
 
 
 

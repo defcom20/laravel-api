@@ -18,6 +18,7 @@ models:
     name: string:100
     url_video: string:100
     video_description: longtext nullable
+    embed_code: string:200
     is_active: boolean
     expiration_date: timestamp nullable
     user_id: id
