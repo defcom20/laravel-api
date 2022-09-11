@@ -20,11 +20,11 @@ class CreateUsersTable extends Migration
             $table->string('uuid', 100)->unique();
             $table->string('name', 100);
             $table->string('email')->unique();
-            $table->string('usuario')->unique();
+            $table->string('usuario', 150)->unique();
             $table->string('password');
             $table->mediumInteger('type_user');
             $table->string('potho')->nullable();
-            $table->foreignId('user_state_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('user_state_id')->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

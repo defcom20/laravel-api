@@ -4,19 +4,24 @@ created:
     - database/factories/QrFactory.php
     - database/factories/QrInformationFactory.php
     - database/factories/QrDesignFactory.php
-    - database/migrations/2022_09_05_204924_create_user_states_table.php
-    - database/migrations/2022_09_05_204925_create_users_table.php
-    - database/migrations/2022_09_05_204926_create_qrs_table.php
-    - database/migrations/2022_09_05_204927_create_qr_information_table.php
-    - database/migrations/2022_09_05_204928_create_qr_designs_table.php
+    - database/factories/QrVisitsFactory.php
+    - database/migrations/2022_09_11_082431_create_user_states_table.php
+    - database/migrations/2022_09_11_082432_create_users_table.php
+    - database/migrations/2022_09_11_082433_create_qrs_table.php
+    - database/migrations/2022_09_11_082434_create_qr_information_table.php
+    - database/migrations/2022_09_11_082435_create_qr_designs_table.php
+    - database/migrations/2022_09_11_082436_create_qr_visits_table.php
     - app/Models/UserState.php
     - app/Models/User.php
     - app/Models/Qr.php
     - app/Models/QrInformation.php
     - app/Models/QrDesign.php
+    - app/Models/QrVisits.php
 models:
     UserState: { name: 'string:50', is_active: boolean }
-    User: { uuid: 'string:100 unique', name: 'string:100', email: 'string unique', usuario: 'string:150 unique', password: string, type_user: mediumInteger, potho: 'string nullable', user_state_id: id, email_verified_at: 'timestamp nullable', remember_token: rememberToken }
-    Qr: { uuid: 'string:100', name: 'string:100', url_video: 'string:100', video_description: 'longtext nullable', is_active: boolean, expiration_date: 'timestamp nullable', user_id: id }
+    User: { uuid: 'string:100 unique', name: 'string:100', email: 'string unique', usuario: 'string:150 unique', password: string, type_user: mediumInteger, potho: 'string nullable', user_state_id: 'id nullable', email_verified_at: 'timestamp nullable', remember_token: rememberToken }
+    Qr: { uuid: 'string:100 unique', name: 'string:100', url_video: 'string:100', video_description: 'longtext nullable', embed_code: 'string:200', uuid_public: 'longtext unique', uuid_visit: 'longtext unique', is_active: boolean, expiration_date: 'timestamp nullable', user_id: id, relationships: { hasMany: QrVisits } }
     QrInformation: { background_panel: 'string:20 nullable', business: 'string:150 nullable', video_title: 'string:200 nullable', description: 'string nullable', link_fb: 'string nullable', link_tw: 'string nullable', link_tk: 'string nullable', welcome_screen: 'string nullable', qr_id: id }
     QrDesign: { url_address: 'string nullable', dots_style: 'string:20 nullable', dots_color: 'string:20 nullable', corners_style: 'string:20 nullable', corners_color: 'string:20 nullable', background_color: 'string:20 nullable', image_file_center: 'string nullable', qr_id: id }
+    QrPublic: { uuid: 'string:100 unique', is_active: boolean, qr_id: id, qr_information_id: id, qr_design_id: id }
+    QrVisits: { uuid: 'string:100 unique', visit: 'int nullable', so: 'string:100 nullable', contry: 'string:100 nullable', city: 'string:100 nullable', is_active: boolean, qr_id: id }

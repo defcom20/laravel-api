@@ -2,10 +2,11 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\Auth\LoginController;
-use App\Http\Controllers\Api\Auth\NewPasswordController;
 use App\Http\Controllers\Api\FileImageController;
+use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Moduls\qr\QrController;
+use App\Http\Controllers\Api\PublicTemplateController;
+use App\Http\Controllers\Api\Auth\NewPasswordController;
 
 // Route::group(['prefix' => '/auth', ['middleware' => 'web']], function () {
 //     //Route::post('/login', [LoginController::class, 'login']);
@@ -16,6 +17,8 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/register', [LoginController::class, 'register']);
 Route::post('/forgot-password', [NewPasswordController::class, 'forgotPassword']);
 Route::post('/reset-password', [NewPasswordController::class, 'reset']);
+Route::post('/template', [PublicTemplateController::class, 'show']);
+Route::post('/v', [PublicTemplateController::class, 'addVisita']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user', function (Request $request) {

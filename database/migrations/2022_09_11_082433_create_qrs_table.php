@@ -17,10 +17,13 @@ class CreateQrsTable extends Migration
 
         Schema::create('qrs', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid', 100);
+            $table->string('uuid', 100)->unique();
             $table->string('name', 100);
             $table->string('url_video', 100);
             $table->longText('video_description')->nullable();
+            $table->string('embed_code', 200);
+            $table->longText('uuid_public')->unique();
+            $table->longText('uuid_visit')->unique();
             $table->boolean('is_active');
             $table->timestamp('expiration_date')->nullable();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Qr extends Model
+class QrVisits extends Model
 {
     use HasFactory;
 
@@ -24,17 +24,11 @@ class Qr extends Model
     protected $casts = [
         'id' => 'integer',
         'is_active' => 'boolean',
-        'expiration_date' => 'timestamp',
-        'user_id' => 'integer',
+        'qr_id' => 'integer',
     ];
 
-    public function qrVisits()
+    public function qr()
     {
-        return $this->hasMany(QrVisits::class);
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Qr::class);
     }
 }

@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Api\Moduls\qr;
 
 use App\Models\Qr;
+use App\Models\QrDesign;
+use App\Models\QrPublic;
+use App\Models\QrVisits;
 use Webpatser\Uuid\Uuid;
 use Illuminate\Http\Request;
+use App\Models\QrInformation;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\QrDesign;
-use App\Models\QrInformation;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -21,7 +23,9 @@ class QrController extends Controller
      */
     public function index()
     {
-        $qrs = Qr::orderBy('id','desc')->get();
+        $qrs = Qr::with(['QrVisits' => function ($res1) {
+            $res1->select('qr_id','visit');
+        }])->orderBy('id','desc')->get();
         return response()->json(['data' => $qrs,'message' => 'Success'], 200);
     }
 
@@ -39,6 +43,8 @@ class QrController extends Controller
                 'nombre_proyecto' => 'required',
                 'video_url' => 'required',
                 'embed_code' => 'required',
+                'uuid_public' => 'required',
+                'uuid_visit' => 'required'
                 // 'qr_imagen_medio' => 'required|mimes:jpg,png,jpeg',
                 // 'image_welcome' => 'required|mimes:jpg,png,jpeg',
             ]
@@ -51,11 +57,16 @@ class QrController extends Controller
         DB::beginTransaction();
         try {
 
+            //$uuid_public = Uuid::generate(4);
+
             $qr = new Qr;
             $qr->uuid = Uuid::generate()->string;
             $qr->name = $request->nombre_proyecto;
             $qr->url_video = $request->video_url;
+            $qr->embed_code = $request->embed_code;
             $qr->video_description = $request->video_descipcion;
+            $qr->uuid_public = $request->uuid_public;
+            $qr->uuid_visit = $request->uuid_visit;
             $qr->is_active = 1;
             $qr->user_id = auth()->id();
             $qr->save();
@@ -81,7 +92,6 @@ class QrController extends Controller
             $qr_information->qr_id = $qr->id;
             $qr_information->save();
 
-
             if ($request->hasFile('qr_imagen_medio')) {
                 $file_medio = $request->file('qr_imagen_medio');
                 $name_medio = time() . $file_medio->getClientOriginalName();
@@ -102,6 +112,16 @@ class QrController extends Controller
             $qr_desing->qr_id = $qr->id;
             $qr_desing->save();
 
+            $qr_public = new QrVisits;
+            $qr_public->uuid = $request->uuid_public;
+            $qr_public->visit = 0;
+            $qr_public->so = "";
+            $qr_public->contry = "";
+            $qr_public->city = "";
+            $qr_public->is_active = 1;
+            $qr_public->qr_id = $qr->id;
+            $qr_public->save();
+
             DB::commit();
             $response["status"] = "successs";
             $response["message"] = "Data guardado con éxito..!";
@@ -110,7 +130,7 @@ class QrController extends Controller
             DB::rollback();
             $response["status"] = "failed";
             $response["message"] = "Failed! image(s) not uploaded";
-            return response()->json($response);
+            return response()->json($e->getMessage());
         }
     }
 

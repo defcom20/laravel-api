@@ -10,18 +10,22 @@ models:
     password: string
     type_user: mediumInteger
     potho: string nullable
-    user_state_id: id
+    user_state_id: id nullable
     email_verified_at: timestamp nullable
     remember_token: rememberToken
   Qr:
-    uuid: string:100
+    uuid: string:100 unique
     name: string:100
     url_video: string:100
     video_description: longtext nullable
     embed_code: string:200
+    uuid_public: longtext unique
+    uuid_visit: longtext unique
     is_active: boolean
     expiration_date: timestamp nullable
     user_id: id
+    relationships:
+      hasMany: QrVisits
   QrInformation:
     background_panel: string:20 nullable
     business: string:150 nullable
@@ -41,6 +45,17 @@ models:
     background_color: string:20 nullable
     image_file_center: string nullable
     qr_id: id
+  QrVisits:
+    uuid: string:100 unique
+    visit: int nullable
+    so: string:100 nullable
+    contry: string:100 nullable
+    city: string:100 nullable
+    is_active: boolean
+    qr_id: id
+
+
+
 
 
 
