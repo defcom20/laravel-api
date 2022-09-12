@@ -24,7 +24,6 @@ class QrDesignFactory extends Factory
     public function definition()
     {
         return [
-            'url_address' => $this->faker->word,
             'dots_style' => $this->faker->regexify('[A-Za-z0-9]{20}'),
             'dots_color' => $this->faker->regexify('[A-Za-z0-9]{20}'),
             'corners_style' => $this->faker->regexify('[A-Za-z0-9]{20}'),

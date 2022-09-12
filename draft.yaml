@@ -19,13 +19,13 @@ models:
     url_video: string:100
     video_description: longtext nullable
     embed_code: string:200
-    uuid_public: longtext unique
-    uuid_visit: longtext unique
+    uuid_public: string
+    uuid_visit: string
     is_active: boolean
     expiration_date: timestamp nullable
     user_id: id
     relationships:
-      hasMany: QrVisits
+      hasOne: QrInformation, QrDesign, QrVisits
   QrInformation:
     background_panel: string:20 nullable
     business: string:150 nullable
@@ -37,7 +37,6 @@ models:
     welcome_screen: string nullable
     qr_id: id
   QrDesign:
-    url_address: string nullable
     dots_style: string:20 nullable
     dots_color: string:20 nullable
     corners_style: string:20 nullable

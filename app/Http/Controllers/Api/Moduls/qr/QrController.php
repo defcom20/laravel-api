@@ -23,10 +23,13 @@ class QrController extends Controller
      */
     public function index()
     {
-        $qrs = Qr::with(['QrVisits' => function ($res1) {
-            $res1->select('qr_id','visit');
-        }])->orderBy('id','desc')->get();
-        return response()->json(['data' => $qrs,'message' => 'Success'], 200);
+        $qrs = Qr::with(['QrDesign' => function ($res1) {
+            $res1->select('*');
+        }, 'QrVisits' => function ($res2) {
+            $res2->select('qr_id', 'visit');
+        }])->orderBy('id', 'desc')->get();
+
+        return response()->json(['data' => $qrs, 'message' => 'Success'], 200);
     }
 
     /**
@@ -76,7 +79,7 @@ class QrController extends Controller
                 $name = time() . $file->getClientOriginalName();
                 $filePath = 'images/' . $name;
                 Storage::disk('s3')->put($filePath, file_get_contents($file));
-            }else{
+            } else {
                 $filePath = "";
             }
 
@@ -85,24 +88,25 @@ class QrController extends Controller
             $qr_information->business = $request->empresa_nombre;
             $qr_information->video_title = $request->empresa_titulo;
             $qr_information->description = $request->empresa_descripcion;
-            $qr_information->link_fb = $request->red_fb ? $request->empresa_red_fb : "" ;
-            $qr_information->link_tw = $request->red_tw ? $request->empresa_red_tw : "" ;
-            $qr_information->link_tk = $request->red_tik ? $request->empresa_red_tik : "" ;
+            $qr_information->link_fb = $request->red_fb ? $request->empresa_red_fb : "";
+            $qr_information->link_tw = $request->red_tw ? $request->empresa_red_tw : "";
+            $qr_information->link_tk = $request->red_tik ? $request->empresa_red_tik : "";
             $qr_information->welcome_screen = $filePath;
             $qr_information->qr_id = $qr->id;
             $qr_information->save();
 
             if ($request->hasFile('qr_imagen_medio')) {
+
+
                 $file_medio = $request->file('qr_imagen_medio');
                 $name_medio = time() . $file_medio->getClientOriginalName();
                 $filePath_medio = 'images/' . $name_medio;
                 Storage::disk('s3')->put($filePath_medio, file_get_contents($file_medio));
-            }else{
+            } else {
                 $filePath_medio = "";
             }
 
             $qr_desing = new QrDesign;
-            $qr_desing->url_address = $request->qr_url_direccion;
             $qr_desing->dots_style = $request->qr_modelo_qr;
             $qr_desing->dots_color = $request->qr_color_model;
             $qr_desing->corners_style = $request->qr_modelo_bolita;

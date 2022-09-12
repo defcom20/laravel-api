@@ -16,11 +16,6 @@ class PublicTemplateController extends Controller
     public function show(Request $request)
     {
 
-        // $data = Qr::where('uuid_public', $request->uuid)->first();
-        // $data = Qr::with('qr_designs')
-
-        //qr_designs,
-
         $data1 = Qr::where('uuid_public', $request->uuid)->first();
 
         $data2 = QrInformation::where('qr_id', $data1->id)->first();
@@ -46,6 +41,15 @@ class PublicTemplateController extends Controller
             return response()->json(['data' => $resData, 'status' => 'Success'], 200);
         } catch (\Exception $e) {
             DB::rollback();
+            return response()->json(['error' => 404, 'message' => 'Not found'], 404);
+        }
+    }
+    public function very($id)
+    {
+        $data = Qr::where('uuid_public', $id)->first();
+        if ($data) {
+            return response()->json(['data' => $data->uuid_visit, 'status' => 'Success'], 200);
+        } else {
             return response()->json(['error' => 404, 'message' => 'Not found'], 404);
         }
     }

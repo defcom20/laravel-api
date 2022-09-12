@@ -17,7 +17,6 @@ class CreateQrDesignsTable extends Migration
 
         Schema::create('qr_designs', function (Blueprint $table) {
             $table->id();
-            $table->string('url_address')->nullable();
             $table->string('dots_style', 20)->nullable();
             $table->string('dots_color', 20)->nullable();
             $table->string('corners_style', 20)->nullable();

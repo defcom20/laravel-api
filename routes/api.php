@@ -19,6 +19,7 @@ Route::post('/forgot-password', [NewPasswordController::class, 'forgotPassword']
 Route::post('/reset-password', [NewPasswordController::class, 'reset']);
 Route::post('/template', [PublicTemplateController::class, 'show']);
 Route::post('/v', [PublicTemplateController::class, 'addVisita']);
+Route::get('/very/{id}', [PublicTemplateController::class, 'very']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/user', function (Request $request) {

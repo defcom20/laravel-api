@@ -28,9 +28,19 @@ class Qr extends Model
         'user_id' => 'integer',
     ];
 
+    public function qrInformation()
+    {
+        return $this->hasOne(QrInformation::class);
+    }
+
+    public function qrDesign()
+    {
+        return $this->hasOne(QrDesign::class);
+    }
+
     public function qrVisits()
     {
-        return $this->hasMany(QrVisits::class);
+        return $this->hasOne(QrVisits::class);
     }
 
     public function user()

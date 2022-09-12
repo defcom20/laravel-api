@@ -22,8 +22,8 @@ class CreateQrsTable extends Migration
             $table->string('url_video', 100);
             $table->longText('video_description')->nullable();
             $table->string('embed_code', 200);
-            $table->longText('uuid_public')->unique();
-            $table->longText('uuid_visit')->unique();
+            $table->string('uuid_public');
+            $table->string('uuid_visit');
             $table->boolean('is_active');
             $table->timestamp('expiration_date')->nullable();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
