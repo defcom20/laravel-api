@@ -34,7 +34,8 @@ models:
     link_fb: string nullable
     link_tw: string nullable
     link_tk: string nullable
-    welcome_screen: string nullable
+    img_welcome: string nullable
+    public_id_img: string
     qr_id: id
   QrDesign:
     dots_style: string:20 nullable
@@ -42,7 +43,8 @@ models:
     corners_style: string:20 nullable
     corners_color: string:20 nullable
     background_color: string:20 nullable
-    image_file_center: string nullable
+    image_center: string nullable
+    public_id_img: string
     qr_id: id
   QrVisits:
     uuid: string:100 unique

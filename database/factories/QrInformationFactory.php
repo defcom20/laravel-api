@@ -31,7 +31,8 @@ class QrInformationFactory extends Factory
             'link_fb' => $this->faker->word,
             'link_tw' => $this->faker->word,
             'link_tk' => $this->faker->word,
-            'welcome_screen' => $this->faker->word,
+            'img_welcome' => $this->faker->word,
+            'public_id_img' => $this->faker->word,
             'qr_id' => Qr::factory(),
         ];
     }

@@ -22,7 +22,8 @@ class CreateQrDesignsTable extends Migration
             $table->string('corners_style', 20)->nullable();
             $table->string('corners_color', 20)->nullable();
             $table->string('background_color', 20)->nullable();
-            $table->string('image_file_center')->nullable();
+            $table->string('image_center')->nullable();
+            $table->string('public_id_img');
             $table->foreignId('qr_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });

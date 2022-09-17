@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class QrController extends Controller
 {
@@ -76,11 +77,16 @@ class QrController extends Controller
 
             if ($request->hasFile('image_welcome')) {
                 $file = $request->file('image_welcome');
-                $name = time() . $file->getClientOriginalName();
-                $filePath = 'images/' . $name;
-                Storage::disk('s3')->put($filePath, file_get_contents($file));
+                $obj = Cloudinary::upload($file->getRealPath(),['folder' => 'imagesqr']);
+                $info_public_id = $obj->getPublicId();
+                $info_url = $obj->getSecurePath();
+                // $file = $request->file('image_welcome');
+                // $name = time() . $file->getClientOriginalName();
+                // $filePath = 'images/' . $name;
+                // Storage::disk('s3')->put($filePath, file_get_contents($file));
             } else {
-                $filePath = "";
+                $info_public_id = "";
+                $info_url = "";
             }
 
             $qr_information = new QrInformation;
@@ -91,19 +97,23 @@ class QrController extends Controller
             $qr_information->link_fb = $request->red_fb ? $request->empresa_red_fb : "";
             $qr_information->link_tw = $request->red_tw ? $request->empresa_red_tw : "";
             $qr_information->link_tk = $request->red_tik ? $request->empresa_red_tik : "";
-            $qr_information->welcome_screen = $filePath;
+            $qr_information->img_welcome = $info_url;
+            $qr_information->public_id_img = $info_public_id;
             $qr_information->qr_id = $qr->id;
             $qr_information->save();
 
             if ($request->hasFile('qr_imagen_medio')) {
-
-
-                $file_medio = $request->file('qr_imagen_medio');
-                $name_medio = time() . $file_medio->getClientOriginalName();
-                $filePath_medio = 'images/' . $name_medio;
-                Storage::disk('s3')->put($filePath_medio, file_get_contents($file_medio));
+                $file = $request->file('qr_imagen_medio');
+                $obj = Cloudinary::upload($file->getRealPath(),['folder' => 'imagesqr']);
+                $design_public_id = $obj->getPublicId();
+                $design_url = $obj->getSecurePath();
+                // $file_medio = $request->file('qr_imagen_medio');
+                // $name_medio = time() . $file_medio->getClientOriginalName();
+                // $filePath_medio = 'images/' . $name_medio;
+                // Storage::disk('s3')->put($filePath_medio, file_get_contents($file_medio));
             } else {
-                $filePath_medio = "";
+                $design_public_id = "";
+                $design_url = "";
             }
 
             $qr_desing = new QrDesign;
@@ -112,7 +122,8 @@ class QrController extends Controller
             $qr_desing->corners_style = $request->qr_modelo_bolita;
             $qr_desing->corners_color = $request->qr_color_modelo_bolita;
             $qr_desing->background_color = $request->qr_color_fondo;
-            $qr_desing->image_file_center = $filePath_medio;
+            $qr_desing->image_center = $design_url;
+            $qr_desing->public_id_img = $design_public_id;
             $qr_desing->qr_id = $qr->id;
             $qr_desing->save();
 

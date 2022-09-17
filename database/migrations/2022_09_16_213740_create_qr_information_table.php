@@ -24,7 +24,8 @@ class CreateQrInformationTable extends Migration
             $table->string('link_fb')->nullable();
             $table->string('link_tw')->nullable();
             $table->string('link_tk')->nullable();
-            $table->string('welcome_screen')->nullable();
+            $table->string('img_welcome')->nullable();
+            $table->string('public_id_img');
             $table->foreignId('qr_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });

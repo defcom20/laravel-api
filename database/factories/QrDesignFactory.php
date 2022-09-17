@@ -29,7 +29,8 @@ class QrDesignFactory extends Factory
             'corners_style' => $this->faker->regexify('[A-Za-z0-9]{20}'),
             'corners_color' => $this->faker->regexify('[A-Za-z0-9]{20}'),
             'background_color' => $this->faker->regexify('[A-Za-z0-9]{20}'),
-            'image_file_center' => $this->faker->word,
+            'image_center' => $this->faker->word,
+            'public_id_img' => $this->faker->word,
             'qr_id' => Qr::factory(),
         ];
     }
