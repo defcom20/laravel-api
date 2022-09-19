@@ -180,6 +180,16 @@ class QrController extends Controller
      */
     public function destroy($id)
     {
-        //
+        DB::beginTransaction();
+        try{
+            Qr::where('uuid', $id)->delete();
+            DB::commit();
+            $response["status"] = "successs";
+            $response["message"] = "Datos eliminados con éxito..!";
+            return response()->json($response);
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw $e;
+        }
     }
 }
