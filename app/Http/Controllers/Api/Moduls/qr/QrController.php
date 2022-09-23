@@ -62,7 +62,6 @@ class QrController extends Controller
         try {
 
             //$uuid_public = Uuid::generate(4);
-
             $qr = new Qr;
             $qr->uuid = Uuid::generate()->string;
             $qr->name = $request->nombre_proyecto;
@@ -77,7 +76,7 @@ class QrController extends Controller
 
             if ($request->hasFile('image_welcome')) {
                 $file = $request->file('image_welcome');
-                $obj = Cloudinary::upload($file->getRealPath(),['folder' => 'imagesqr']);
+                $obj = Cloudinary::upload($file->getRealPath(), ['folder' => 'imagesqr']);
                 $info_public_id = $obj->getPublicId();
                 $info_url = $obj->getSecurePath();
                 // $file = $request->file('image_welcome');
@@ -104,7 +103,7 @@ class QrController extends Controller
 
             if ($request->hasFile('qr_imagen_medio')) {
                 $file = $request->file('qr_imagen_medio');
-                $obj = Cloudinary::upload($file->getRealPath(),['folder' => 'imagesqr']);
+                $obj = Cloudinary::upload($file->getRealPath(), ['folder' => 'imagesqr']);
                 $design_public_id = $obj->getPublicId();
                 $design_url = $obj->getSecurePath();
                 // $file_medio = $request->file('qr_imagen_medio');
@@ -157,7 +156,8 @@ class QrController extends Controller
      */
     public function show($id)
     {
-        //
+        $qrs = Qr::with(['QrDesign', 'QrInformation'])->where("uuid", $id)->first();
+        return response()->json(['data' => $qrs, 'message' => 'Success'], 200);
     }
 
     /**
@@ -167,9 +167,93 @@ class QrController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $uuid)
     {
-        //
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'nombre_proyecto' => 'required',
+                'video_url' => 'required',
+                'embed_code' => 'required',
+                'uuid_public' => 'required',
+                'uuid_visit' => 'required'
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json(["status" => "failed", "message" => "Validation error", "errors" => $validator->errors()]);
+        }
+
+        DB::beginTransaction();
+        try {
+            Qr::where('uuid', $uuid)->update([
+                'name' => $request->nombre_proyecto,
+                'url_video' => $request->video_url,
+                'embed_code' => $request->embed_code,
+                'video_description' => $request->video_descipcion,
+                'uuid_public' => $request->uuid_public,
+                'uuid_visit' => $request->uuid_visit,
+            ]);
+
+            if ($request->hasFile('image_welcome')) {
+                $file = $request->file('image_welcome');
+                $obj = Cloudinary::upload($file->getRealPath(), ['folder' => 'imagesqr']);
+                $info_public_id_edit = $obj->getPublicId();
+                $info_url_edit = $obj->getSecurePath();
+            } else {
+                $info_public_id_edit = $request->public_id_img ? $request->public_id_img : "";
+                $info_url_edit = $request->image_welcome ? $request->image_welcome : "";
+            }
+
+            QrInformation::where('qr_id', $request->id_edit)->update([
+                'background_panel' => $request->background_color,
+                'business' => $request->empresa_nombre,
+                'video_title' => $request->empresa_titulo,
+                'description' => $request->empresa_descripcion,
+                'link_fb' => $request->red_fb  && $request->empresa_red_fb  != 'null' ? $request->empresa_red_fb  : "",
+                'link_tw' => $request->red_tw  && $request->empresa_red_tw  != 'null' ? $request->empresa_red_tw  : "",
+                'link_tk' => $request->red_tik && $request->empresa_red_tik != 'null' ? $request->empresa_red_tik : "",
+                'img_welcome' => $info_url_edit,
+                'public_id_img' => $info_public_id_edit,
+            ]);
+
+            if ($request->hasFile('qr_imagen_medio')) {
+                $file = $request->file('qr_imagen_medio');
+                $obj = Cloudinary::upload($file->getRealPath(), ['folder' => 'imagesqr']);
+                $design_imagen_center_edit = $obj->getSecurePath();
+                $design_public_id_edit = $obj->getPublicId();
+            } else {
+                $design_imagen_center_edit = $request->qr_imagen_medio ? $request->qr_imagen_medio : "";
+                $design_public_id_edit = $request->qr_imagen_medio_id ? $request->qr_imagen_medio_id : "";
+            }
+
+            QrDesign::where('qr_id', $request->id_edit)->update([
+                'dots_style' => $request->qr_modelo_qr,
+                'dots_color' => $request->qr_color_model,
+                'corners_style' => $request->qr_modelo_bolita,
+                'corners_color' => $request->qr_color_modelo_bolita,
+                'background_color' => $request->qr_color_fondo,
+                'image_center' => $design_imagen_center_edit,
+                'public_id_img' => $design_public_id_edit,
+            ]);
+
+            DB::commit();
+            $response["status"] = "successs";
+            $response["message"] = "Datos actualizados con éxito..!";
+            return response()->json($response);
+        } catch (\Exception $e) {
+            DB::rollback();
+            $response["status"] = "failed";
+            $response["message"] = "Error en actualizar los datos.";
+            return response()->json($e->getMessage());
+        }
+
+
+        $data = [
+            "uuid" => $uuid,
+            "url_Data" => $request->input("nombre_proyecto")
+        ];
+        return response()->json(['data' => $data, 'message' => 'Success'], 200);
     }
 
     /**
@@ -181,7 +265,7 @@ class QrController extends Controller
     public function destroy($id)
     {
         DB::beginTransaction();
-        try{
+        try {
             Qr::where('uuid', $id)->delete();
             DB::commit();
             $response["status"] = "successs";
