@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Models\QrInformation;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
@@ -22,13 +23,31 @@ class QrController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $porciones = explode("?", $request->page);
+
+        $page = $porciones[0];
+        $limit = explode("=", $porciones[1]);
+        $status = explode("=", $porciones[2]);
+        $sortBy = explode("=", $porciones[3]);
+
+        // $qrs = Qr::with(['QrDesign' => function ($res1) {
+        //     $res1->select('*');
+        // }, 'QrVisits' => function ($res2) {
+        //     $res2->select('qr_id', 'visit');
+        // }])->paginate(5);
+
+        Paginator::currentPageResolver(function () use ($page) {
+            return $page;
+        });
+
         $qrs = Qr::with(['QrDesign' => function ($res1) {
             $res1->select('*');
         }, 'QrVisits' => function ($res2) {
             $res2->select('qr_id', 'visit');
-        }])->orderBy('id', 'desc')->get();
+        }])->where("is_active", $status[1])->orderBy($sortBy[1], 'desc')->paginate($limit[1]);
+
 
         return response()->json(['data' => $qrs, 'message' => 'Success'], 200);
     }
