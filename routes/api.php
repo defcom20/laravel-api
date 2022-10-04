@@ -42,10 +42,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/resetPassword', [LoginController::class, 'resetPassword']);
     Route::post('/logout', [LoginController::class, 'logout']);
 
-    Route::apiResources([
-        'qrs' => QrController::class,
-    ]);
+
 });
+
+Route::apiResources([
+    'qrs' => QrController::class,
+]);
 
 Route::get('/{path}/{name}', [FileImageController::class, 'show']);
 

@@ -12,7 +12,6 @@ use App\Models\QrInformation;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
@@ -27,29 +26,52 @@ class QrController extends Controller
     {
         $porciones = explode("?", $request->page);
 
+
         $page = $porciones[0];
         $limit = explode("=", $porciones[1]);
         $status = explode("=", $porciones[2]);
         $sortBy = explode("=", $porciones[3]);
+        $search = explode("=", $porciones[4]);
 
-        // $qrs = Qr::with(['QrDesign' => function ($res1) {
-        //     $res1->select('*');
-        // }, 'QrVisits' => function ($res2) {
-        //     $res2->select('qr_id', 'visit');
-        // }])->paginate(5);
+        $direction = $sortBy[1] === "name" ? "asc" : "desc";
+        $ordey = $sortBy[1] === "visit" ? "created_at" : $sortBy[1];
 
         Paginator::currentPageResolver(function () use ($page) {
             return $page;
         });
 
-        $qrs = Qr::with(['QrDesign' => function ($res1) {
-            $res1->select('*');
-        }, 'QrVisits' => function ($res2) {
-            $res2->select('qr_id', 'visit');
-        }])->where("is_active", $status[1])->orderBy($sortBy[1], 'desc')->paginate($limit[1]);
+        // $qrs = Qr::with(['QrDesign' => function ($res1) {
+        //     $res1->select('*');
+        // }, 'QrVisits' => function ($res2) use ($ordey, $direction) {
+        //     $res2->select('qr_id', 'visit');
+        //     $res2->orderBy($ordey, $direction);
+        // }])->where('is_active', $status[1])->paginate($limit[1]);
 
+        // $qrs = Qr::with(['QrDesign', 'QrVisits' => function ($res2) {
+        //     $res2->select('qr_id', 'visit');
+        // }])->where('is_active', $status[1])->paginate($limit[1]);
+
+        $res = Qr::with(['QrDesign', 'QrVisits:qr_id,visit']);
+        $qrs = $res->where([['is_active', '=' ,$status[1]],['name', 'LIKE', '%'.$search[1].'%']]);
+        //$qrs = $res->where('name', 'LIKE', '%'.$search[1].'%');
+        $qrs = $sortBy[1] === "visit" ? $res->orderByDesc(QrVisits::select('visit')->whereColumn('qr_id', 'qrs.id')->orderByDesc('visit')->limit(1))  : $res->orderBy($ordey, $direction);
+        $qrs = $res->paginate($limit[1]);
+
+
+
+        // $qrs = Qr::join('qr_designs', function ($q1) {
+        //     $q1->on('qrs.id', '=', 'qr_designs.qr_id')->select('*');
+        // })->join('qr_visits', function ($q2) {
+        //     $q2->on('qrs.id', '=', 'qr_visits.qr_id')->select('qr_id', 'visit');
+        // })->where('qrs.is_active', $status[1])->orderBy($ordey, $direction)->paginate($limit[1]);
+
+
+
+        // }])->where("is_active", $status[1])->orderBy($ordey, $direction)->paginate($limit[1]);
 
         return response()->json(['data' => $qrs, 'message' => 'Success'], 200);
+        //return json_encode($qrs);
+
     }
 
     /**
