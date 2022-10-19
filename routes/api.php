@@ -8,11 +8,6 @@ use App\Http\Controllers\Api\Moduls\qr\QrController;
 use App\Http\Controllers\Api\PublicTemplateController;
 use App\Http\Controllers\Api\Auth\NewPasswordController;
 
-// Route::group(['prefix' => '/auth', ['middleware' => 'web']], function () {
-//     //Route::post('/login', [LoginController::class, 'login']);
-//     Route::post('/register', [LoginController::class, 'register']);
-// });
-
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/register', [LoginController::class, 'register']);
 Route::post('/forgot-password', [NewPasswordController::class, 'forgotPassword']);
@@ -28,7 +23,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
             'user' => $user,
             'message' => 'Success',
         ], 200);
-        // return response()->json($user, 200);
     });
     Route::get('/refresh', function (Request $request) {
         //$request->user()->tokens()->delete();
@@ -42,17 +36,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/resetPassword', [LoginController::class, 'resetPassword']);
     Route::post('/logout', [LoginController::class, 'logout']);
 
+    Route::apiResources([
+        'qrs' => QrController::class,
+    ]);
 
 });
 
-Route::apiResources([
-    'qrs' => QrController::class,
-]);
-
 Route::get('/{path}/{name}', [FileImageController::class, 'show']);
-
-
-
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
